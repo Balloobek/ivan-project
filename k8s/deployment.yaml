@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ivan-namespace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ivan-api-deployment
+  namespace: ivan-namespace
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ivan-api
+  template:
+    metadata:
+      labels:
+        app: ivan-api
+    spec:
+      containers:
+      - name: ivan-api-container
+        image: balloonbek/ivan-project:v1
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ivan-api-service
+  namespace: ivan-namespace
+spec:
+  type: NodePort
+  selector:
+    app: ivan-api
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30000
